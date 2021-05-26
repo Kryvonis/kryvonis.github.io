@@ -1,221 +1,209 @@
-window.onload = function () {
-  //functions definition
+console.clear();
+const p = noise;
+let branches = [];
 
-  //class definition
-  class segm {
-    constructor(x, y, l) {
-      this.b = Math.random() * 1.9 + 0.1;
-      this.x0 = x;
-      this.y0 = y;
-      this.a = Math.random() * 2 * Math.PI;
-      this.x1 = this.x0 + l * Math.cos(this.a);
-      this.y1 = this.y0 + l * Math.sin(this.a);
-      this.l = l;
-    }
-    update(x, y) {
-      this.x0 = x;
-      this.y0 = y;
-      this.a = Math.atan2(this.y1 - this.y0, this.x1 - this.x0);
-      this.x1 = this.x0 + this.l * Math.cos(this.a);
-      this.y1 = this.y0 + this.l * Math.sin(this.a);
+class Branch {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.prevx = x;
+    this.prevy = y;
+    this.visible = true;
+    this.color = color(random(110, 110 + 100), 70, 100, 100);
+    this.speed = {
+      x: random(-7, 7),
+      y: random(-7, 7),
+    };
+  }
+  walls() {
+    this.prevx = this.x;
+    this.prevy = this.y;
+    if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) {
+      this.visible = false;
     }
   }
-  class rope {
-    constructor(tx, ty, l, b, slq, typ) {
-      if (typ == "l") {
-        this.res = l / 2;
-      } else {
-        this.res = l / slq;
-      }
-      this.type = typ;
-      this.l = l;
-      this.segm = [];
-      this.segm.push(new segm(tx, ty, this.l / this.res));
-      for (let i = 1; i < this.res; i++) {
-        this.segm.push(
-          new segm(this.segm[i - 1].x1, this.segm[i - 1].y1, this.l / this.res)
-        );
-      }
-      this.b = b;
-    }
-    update(t) {
-      this.segm[0].update(t.x, t.y);
-      for (let i = 1; i < this.res; i++) {
-        this.segm[i].update(this.segm[i - 1].x1, this.segm[i - 1].y1);
-      }
-    }
-    show() {
-      if (this.type == "l") {
-        c.beginPath();
-        for (let i = 0; i < this.segm.length; i++) {
-          c.lineTo(this.segm[i].x0, this.segm[i].y0);
-        }
-        c.lineTo(
-          this.segm[this.segm.length - 1].x1,
-          this.segm[this.segm.length - 1].y1
-        );
-        c.strokeStyle = "white";
-        c.lineWidth = this.b;
-        c.stroke();
-
-        c.beginPath();
-        c.arc(this.segm[0].x0, this.segm[0].y0, 1, 0, 2 * Math.PI);
-        c.fillStyle = "white";
-        c.fill();
-
-        c.beginPath();
-        c.arc(
-          this.segm[this.segm.length - 1].x1,
-          this.segm[this.segm.length - 1].y1,
-          2,
-          0,
-          2 * Math.PI
-        );
-        c.fillStyle = "white";
-        c.fill();
-      } else {
-        for (let i = 0; i < this.segm.length; i++) {
-          c.beginPath();
-          c.arc(
-            this.segm[i].x0,
-            this.segm[i].y0,
-            this.segm[i].b,
-            0,
-            2 * Math.PI
-          );
-          c.fillStyle = "white";
-          c.fill();
-        }
-        c.beginPath();
-        c.arc(
-          this.segm[this.segm.length - 1].x1,
-          this.segm[this.segm.length - 1].y1,
-          2,
-          0,
-          2 * Math.PI
-        );
-        c.fillStyle = "white";
-        c.fill();
-      }
-    }
+  draw() {
+    line(this.prevx, this.prevy, this.x, this.y);
   }
-
-  //setting up canvas
-  let c = init("canvas").c,
-    canvas = init("canvas").canvas,
-    w = (canvas.width = window.innerWidth),
-    h = (canvas.height = window.innerHeight),
-    ropes = [];
-
-  //variables definition
-  let nameOfVariable = "value",
-    mouse = {},
-    last_mouse = {},
-    rl = 50,
-    randl = [],
-    target = { x: w / 2, y: h / 2 },
-    last_target = {},
-    t = 0,
-    q = 10,
-    da = [],
-    type = "l";
-
-  for (let i = 0; i < 100; i++) {
-    if (Math.random() > 0.25) {
-      type = "l";
-    } else {
-      type = "o";
-    }
-    ropes.push(
-      new rope(
-        w / 2,
-        h / 2,
-        (Math.random() * 1 + 0.5) * 500,
-        Math.random() * 0.4 + 0.1,
-        Math.random() * 15 + 5,
-        type
-      )
-    );
-    randl.push(Math.random() * 2 - 1);
-    da.push(0);
+  moveStraight() {
+    this.x += this.speed.x * 5;
+    this.y += this.speed.y * 5;
   }
-
-  //place for objects in animation
-  function draw() {
-    if (mouse.x) {
-      target.errx = mouse.x - target.x;
-      target.erry = mouse.y - target.y;
-    } else {
-      target.errx =
-        w / 2 +
-        ((h / 2 - q) * Math.sqrt(2) * Math.cos(t)) /
-          (Math.pow(Math.sin(t), 2) + 1) -
-        target.x;
-      target.erry =
-        h / 2 +
-        ((h / 2 - q) * Math.sqrt(2) * Math.cos(t) * Math.sin(t)) /
-          (Math.pow(Math.sin(t), 2) + 1) -
-        target.y;
-    }
-
-    target.x += target.errx / 10;
-    target.y += target.erry / 10;
-
-    t += 0.01;
-
-    for (let i = 0; i < ropes.length; i++) {
-      if (randl[i] > 0) {
-        da[i] += (1 - randl[i]) / 10;
-      } else {
-        da[i] += (-1 - randl[i]) / 10;
-      }
-      ropes[i].update({
-        x:
-          target.x +
-          randl[i] * rl * Math.cos((i * 2 * Math.PI) / ropes.length + da[i]),
-        y:
-          target.y +
-          randl[i] * rl * Math.sin((i * 2 * Math.PI) / ropes.length + da[i]),
-      });
-      ropes[i].show();
-    }
-    last_target.x = target.x;
-    last_target.y = target.y;
+  moveRandom() {
+    this.speed.x += random(-10, 10);
+    this.speed.y += random(-10, 10);
+    this.x += this.speed.x;
+    this.y += this.speed.y;
   }
+  moveNoise() {
+    this.speed.x +=
+      p.simplex3(this.x * 0.005, this.y * 0.005, millis() * 0.0001) * 2;
+    this.speed.y +=
+      p.simplex3(this.y * 0.005, this.x * 0.005, millis() * 0.0001) * 2;
+    this.x += this.speed.x;
+    this.y += this.speed.y;
+  }
+}
 
-  //mouse position
-  canvas.addEventListener(
-    "mousemove",
-    function (e) {
-      last_mouse.x = mouse.x;
-      last_mouse.y = mouse.y;
+function createBranches(amount) {
+  // Refresh color & blend mode
+  blendMode(BLEND);
+  colorMode(RGB);
 
-      mouse.x = e.pageX - this.offsetLeft;
-      mouse.y = e.pageY - this.offsetTop;
-    },
-    false
-  );
+  branches = [];
+  for (let i = 0; i < amount; i++) {
+    const x = width / 2;
+    const y = height / 2;
+    branches.push(new Branch(x, y));
+  }
+}
 
-  canvas.addEventListener("mouseleave", function (e) {
-    mouse.x = false;
-    mouse.y = false;
+/* ====== STEP 1 ====== */
+function goToStep1() {
+  clear();
+  createBranches(1);
+  strokeWeight(10);
+  branches[0].speed.x = random([random(-4, -2), random(2, 4)]);
+  branches[0].speed.y = random([random(-4, -2), random(2, 4)]);
+}
+function step1() {
+  if (branches[0].visible) {
+    stroke(random([100, 150, 200, 250]));
+    branches[0].moveStraight();
+    branches[0].draw();
+    branches[0].walls();
+  }
+}
+
+/* ====== STEP 2 ====== */
+function goToStep2() {
+  clear();
+  createBranches(1);
+  strokeWeight(5);
+}
+function step2() {
+  if (branches[0].visible) {
+    stroke(random([100, 150, 200, 250]));
+    branches[0].moveRandom();
+    branches[0].draw();
+    branches[0].walls();
+  }
+}
+
+/* ====== STEP 3 ====== */
+function goToStep3() {
+  clear();
+  createBranches(1);
+  strokeWeight(5);
+}
+function step3() {
+  if (branches[0].visible) {
+    stroke(random([100, 150, 200, 250]));
+    branches[0].moveNoise();
+    branches[0].draw();
+    branches[0].walls();
+  }
+}
+
+/* ====== STEP 4 ====== */
+function goToStep4() {
+  clear();
+  createBranches(50);
+  strokeWeight(5);
+}
+function step4() {
+  branches.forEach((branch) => {
+    if (branch.visible) {
+      stroke(random([100, 150, 200, 250]));
+      branch.moveNoise();
+      branch.draw();
+      branch.walls();
+    }
   });
+}
 
-  //animation frame
-  function loop() {
-    window.requestAnimFrame(loop);
-    c.clearRect(0, 0, w, h);
-    draw();
-  }
-
-  //window resize
-  window.addEventListener("resize", function () {
-    (w = canvas.width = window.innerWidth),
-      (h = canvas.height = window.innerHeight);
-    loop();
+/* ====== STEP 5 ====== */
+function goToStep5() {
+  clear();
+  createBranches(50);
+  strokeWeight(1);
+  stroke(255);
+}
+function step5() {
+  branches.forEach((branch) => {
+    if (branch.visible) {
+      branch.moveNoise();
+      branch.draw();
+      branch.walls();
+    }
   });
+}
 
-  //animation runner
-  loop();
-  setInterval(loop, 1000 / 60);
+/* ====== STEP 6 ====== */
+function goToStep6() {
+  clear();
+  createBranches(1000);
+  strokeWeight(1);
+  stroke(255, 255, 255, 50);
+}
+function step6() {
+  branches.forEach((branch) => {
+    if (branch.visible) {
+      branch.moveNoise();
+      branch.draw();
+      branch.walls();
+    }
+  });
+}
+
+/* ====== STEP 7 ====== */
+function goToStep7() {
+  clear();
+  createBranches(1000);
+  colorMode(HSB);
+  blendMode(SCREEN);
+  strokeWeight(2);
+}
+function step7() {
+  stroke((millis() * 0.3) % 360, 100, 50);
+  branches.forEach((branch) => {
+    if (branch.visible) {
+      branch.moveNoise();
+      branch.draw();
+      branch.walls();
+    }
+  });
+}
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  strokeCap(SQUARE);
+  document.querySelector("canvas").addEventListener("click", windowResized);
+  if (window["goToStep" + step.value]) {
+    window["goToStep" + step.value]();
+  }
+}
+
+function windowResized() {
+  p.seed(random(100));
+  resizeCanvas(windowWidth, windowHeight);
+  if (window["goToStep" + step.value]) {
+    window["goToStep" + step.value]();
+  }
+}
+
+const texts = document.querySelectorAll("section p");
+step.oninput = () => {
+  if (window["goToStep" + step.value]) {
+    window["goToStep" + step.value]();
+  }
 };
+
+function draw() {
+  if (window["step" + step.value]) {
+    window["step" + step.value]();
+  }
+
+  texts.forEach((text) => (text.style.display = "none"));
+  texts[step.value - 1].style.display = "block";
+}
