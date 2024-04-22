@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://art.krvns.com/</loc>
+        <loc>https://kryvonis.github.io/</loc>
     </url>
     <url>
-        <loc>https://art.krvns.com/about/</loc>
+        <loc>https://kryvonis.github.io/about/</loc>
     </url>
     <url>
-        <loc>https://art.krvns.com/archive/</loc>
+        <loc>https://kryvonis.github.io/archive/</loc>
     </url>
     <url>
-        <loc>https://art.krvns.com/current/</loc>
+        <loc>https://kryvonis.github.io/current/</loc>
         <lastmod>2024-04-18</lastmod>
     </url>
     <url>
-        <loc>https://art.krvns.com/tags/</loc>
+        <loc>https://kryvonis.github.io/tags/</loc>
     </url>
     <url>
-        <loc>https://art.krvns.com/tags/dashplotly/</loc>
+        <loc>https://kryvonis.github.io/tags/dashplotly/</loc>
     </url>
     <url>
-        <loc>https://art.krvns.com/tags/javascript/</loc>
+        <loc>https://kryvonis.github.io/tags/javascript/</loc>
     </url>
     <url>
-        <loc>https://art.krvns.com/tags/python/</loc>
+        <loc>https://kryvonis.github.io/tags/python/</loc>
     </url>
     <url>
-        <loc>https://art.krvns.com/tags/sql/</loc>
+        <loc>https://kryvonis.github.io/tags/sql/</loc>
     </url>
     <url>
-        <loc>https://art.krvns.com/test/</loc>
+        <loc>https://kryvonis.github.io/test/</loc>
         <lastmod>2024-04-18</lastmod>
     </url>
 </urlset>

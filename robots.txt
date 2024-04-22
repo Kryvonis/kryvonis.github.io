@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 Allow: /
-Sitemap: https://art.krvns.com/sitemap.xml
+Sitemap: https://kryvonis.github.io/sitemap.xml
