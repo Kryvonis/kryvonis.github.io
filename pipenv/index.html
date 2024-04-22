@@ -19,14 +19,14 @@
 
     <meta property="og:description" content="">
     <meta property="og:title" content="">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://kryvonis.github.io/">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://kryvonis.github.io/pipenv/">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:description" content="">
     <meta name="twitter:title" content="">
     <meta property="twitter:domain" content="kryvonis.github.io">
-    <meta property="twitter:url" content="https://kryvonis.github.io/">
+    <meta property="twitter:url" content="https://kryvonis.github.io/pipenv/">
 
     </head>
 
@@ -72,35 +72,8 @@
 
     <div class="content">
         
-        <div class="posts">
-                <div class="post on-list">
-                    
-    <h1 class="post-title"><a href="https://kryvonis.github.io/current/">Current Project</a></h1>
-    <div class="post-meta-inline">
+    <div class="post">
         
-    <span class="post-date">
-            2024-04-18
-        </span>
-
-    </div>
-
-    
-        <span class="post-tags-inline">
-                :: tags:&nbsp;
-                <a class="post-tag" href="https://kryvonis.github.io/tags/dashplotly/">#dashplotly</a>&nbsp;
-                <a class="post-tag" href="https://kryvonis.github.io/tags/python/">#python</a></span>
-    
-
-
-                    <div class="post-content">
-            <p>My current project still waiting for some good times </p>
-
-        </div>
-
-                </div>
-            
-                <div class="post on-list">
-                    
     <h1 class="post-title"><a href="https://kryvonis.github.io/pipenv/">Python Project Setup (finaly I found PIPENV)</a></h1>
     <div class="post-meta-inline">
         
@@ -118,27 +91,47 @@
                 <a class="post-tag" href="https://kryvonis.github.io/tags/setup/">#setup</a></span>
     
 
-
-                    
         <div class="post-content">
             <p>I tried a lot to setup projects requirements on python. Javascript with npm has <code>package.json</code> for everything and that days I couldn't find anything like that. But <a href="https://packaging.python.org/en/latest/tutorials/managing-dependencies">pipenv</a> finally make this easier and it's right what I need</p>
+<span id="continue-reading"></span>
+<p>When I setup my project for the first time my from now I would use <a href="https://packaging.python.org/en/latest/tutorials/managing-dependencies">pipenv</a>. It's simple, strict and with just two files (Pipfile, Pipfile.lock). As package.json and package-lock.json in JS, pipenv create both with</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">python3 -m</span><span> pip install</span><span style="color:#bf616a;"> --user</span><span> pipenv
+</span></code></pre>
+<p>Then initialize your python version with</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">pipenv --python </span><span>&lt;version&gt;
+</span></code></pre>
+<p>For example I create</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">pipenv --python</span><span> 3.11
+</span></code></pre>
+<p>You will get something like this in your Pipfile</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">❯</span><span> cat Pipfile
+</span><span style="color:#bf616a;">[[source]]
+</span><span style="color:#bf616a;">url</span><span> = &quot;</span><span style="color:#a3be8c;">https://pypi.org/simple</span><span>&quot;
+</span><span style="color:#bf616a;">verify_ssl</span><span> = true
+</span><span style="color:#bf616a;">name</span><span> = &quot;</span><span style="color:#a3be8c;">pypi</span><span>&quot;
+</span><span>
+</span><span style="color:#bf616a;">[packages]
+</span><span>
+</span><span style="color:#bf616a;">[dev-packages]
+</span><span>
+</span><span style="color:#bf616a;">[requires]
+</span><span style="color:#bf616a;">python_version</span><span> = &quot;</span><span style="color:#a3be8c;">3.11</span><span>&quot;
+</span></code></pre>
+<p>Now lets install package</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">pipenv</span><span> install requests
+</span></code></pre>
+<p>Useful commands</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">pipenv</span><span> shell </span><span style="color:#65737e;"># activate venv
+</span><span style="color:#bf616a;">pipenv</span><span> install &lt;pkg_name&gt; </span><span style="color:#65737e;"># to install package
+</span><span style="color:#bf616a;">pipenv</span><span> install</span><span style="color:#bf616a;"> -d </span><span>&lt;pkg_name&gt; </span><span style="color:#65737e;"># to install dev dependencies
+</span></code></pre>
+<p>For more please visit <a href="https://pipenv.pypa.io/en/latest/index.html">Pipenv Doc</a> or just type pipenv -h to get brief explain what commands are available</p>
 
         </div>
-        <div>
-            <!-- &#xFE0E; -- force text style - some devices render this as emoji -->
-            <a class="read-more button" href="https://kryvonis.github.io/pipenv/">
-                <span class="button__text">Read more</span>&nbsp;
-                <span class="button__icon">&#8617;&#xFE0E;</span>
-            </a>
-        </div>
-    
 
-                </div>
-            <div class="pagination">
-                <div class="pagination__buttons"></div>
-            </div>
-        </div>
         
+    </div>
+
     </div>
 
     
