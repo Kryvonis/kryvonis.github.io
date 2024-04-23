@@ -80,7 +80,7 @@
     <div class="post-meta-inline">
         
     <span class="post-date">
-            2024-04-18
+            2024-04-22
         </span>
 
     </div>
@@ -96,7 +96,7 @@
         <div class="post-content">
             <p>I tried a lot to setup projects requirements on python. Javascript with npm has <code>package.json</code> for everything and that days I couldn't find anything like that. But <a href="https://packaging.python.org/en/latest/tutorials/managing-dependencies">pipenv</a> finally make this easier and it's right what I need</p>
 <span id="continue-reading"></span>
-<p>When I setup my project for the first time my from now I would use <a href="https://packaging.python.org/en/latest/tutorials/managing-dependencies">pipenv</a>. It's simple, strict and with just two files (Pipfile, Pipfile.lock). As package.json and package-lock.json in JS, pipenv create both with</p>
+<p>From now for setup my python projects I will use <a href="https://packaging.python.org/en/latest/tutorials/managing-dependencies">pipenv</a>. It's simple and with just two files (Pipfile, Pipfile.lock). As package.json and package-lock.json in JS, pipenv create both with</p>
 <pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">python3 -m</span><span> pip install</span><span style="color:#bf616a;"> --user</span><span> pipenv
 </span></code></pre>
 <p>Then initialize your python version with</p>
@@ -121,8 +121,27 @@
 </span></code></pre>
 <p>Now lets install package</p>
 <pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">pipenv</span><span> install requests
+</span><span style="color:#bf616a;">pipenv</span><span> install</span><span style="color:#bf616a;"> -d</span><span> pytest
 </span></code></pre>
-<p>Useful commands</p>
+<p>Lest see what we have now</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">[[source]]
+</span><span style="color:#bf616a;">url</span><span> = &quot;</span><span style="color:#a3be8c;">https://pypi.org/simple</span><span>&quot;
+</span><span style="color:#bf616a;">verify_ssl</span><span> = true
+</span><span style="color:#bf616a;">name</span><span> = &quot;</span><span style="color:#a3be8c;">pypi</span><span>&quot;
+</span><span>
+</span><span style="color:#bf616a;">[packages]
+</span><span style="color:#bf616a;">requests</span><span> = &quot;</span><span style="color:#a3be8c;">*</span><span>&quot;
+</span><span>
+</span><span style="color:#bf616a;">[dev-packages]
+</span><span style="color:#bf616a;">pytest</span><span> = &quot;</span><span style="color:#a3be8c;">*</span><span>&quot;
+</span><span>
+</span><span style="color:#bf616a;">[requires]
+</span><span style="color:#bf616a;">python_version</span><span> = &quot;</span><span style="color:#a3be8c;">3.11</span><span>&quot;
+</span><span>
+</span></code></pre>
+<p>And that is it, easy</p>
+<hr />
+<p>There are some useful commands</p>
 <pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">pipenv</span><span> shell </span><span style="color:#65737e;"># activate venv
 </span><span style="color:#bf616a;">pipenv</span><span> install &lt;pkg_name&gt; </span><span style="color:#65737e;"># to install package
 </span><span style="color:#bf616a;">pipenv</span><span> install</span><span style="color:#bf616a;"> -d </span><span>&lt;pkg_name&gt; </span><span style="color:#65737e;"># to install dev dependencies
