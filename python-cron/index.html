@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://kryvonis.github.io/style.css">
+    <link rel="stylesheet" href="https://kryvonis.github.io/color/green.css">
+
+        <link rel="stylesheet" href="https://kryvonis.github.io/color/background_dark.css">
+    
+    <link rel="stylesheet" href="https://kryvonis.github.io/font-hack-subset.css">
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://kryvonis.github.io/python-cron/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="">
+    <meta property="twitter:domain" content="kryvonis.github.io">
+    <meta property="twitter:url" content="https://kryvonis.github.io/python-cron/">
+
+        <link rel="shortcut icon" type="image&#x2F;x-icon" href="/img/favicon.ico">
+    
+    </head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://kryvonis.github.io" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            Akr KRVNS
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+                <nav class="menu">
+            <ul class="menu__inner">
+                <li><a href="https://kryvonis.github.io/current">current</a></li>
+            
+                <li class="active"><a href="https://kryvonis.github.io">blog</a></li>
+            
+                <li><a href="https://kryvonis.github.io/tags">tags</a></li>
+            
+                <li><a href="https://kryvonis.github.io/archive">archive</a></li>
+            
+                <li><a href="https://kryvonis.github.io/about">about me</a></li>
+            
+                <li><a href="https://github.com/Kryvonis" target="_blank" rel="noopener noreferrer">github</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://kryvonis.github.io/python-cron/">Python Cron Task (Measure Internet Speed)</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2024-04-23
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://kryvonis.github.io/tags/cron/">#cron</a>&nbsp;
+                <a class="post-tag" href="https://kryvonis.github.io/tags/python/">#python</a></span>
+    
+
+        <div class="post-content">
+            <h2 id="let-s-measure-internet-speed-with-python-and-learn-some-cron-basics">Let's measure internet speed with Python and learn some cron basics</h2>
+<span id="continue-reading"></span>
+<p>One evening I had poor internet and I decided to remind how to run periodic tasks on Python. First let's make a small script that will measure download and upload speed and save this data to csv file. With a little help of generative AI I had this script.</p>
+<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">import </span><span>logging
+</span><span style="color:#b48ead;">import </span><span>os
+</span><span style="color:#b48ead;">import </span><span>pandas </span><span style="color:#b48ead;">as </span><span>pd
+</span><span>
+</span><span style="color:#b48ead;">from </span><span>config </span><span style="color:#b48ead;">import </span><span style="color:#bf616a;">CSV_FILENAME</span><span>, </span><span style="color:#bf616a;">LOG_FILENAME</span><span>, </span><span style="color:#bf616a;">STORE_PATH
+</span><span>
+</span><span style="color:#b48ead;">from </span><span>speedtest </span><span style="color:#b48ead;">import </span><span>Speedtest
+</span><span>
+</span><span>
+</span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">_add_log</span><span>() -&gt; </span><span style="color:#d08770;">None</span><span>:
+</span><span>    log = logging.</span><span style="color:#bf616a;">getLogger</span><span>(__name__)
+</span><span>    log.</span><span style="color:#bf616a;">setLevel</span><span>(logging.</span><span style="color:#bf616a;">INFO</span><span>)
+</span><span>    </span><span style="color:#b48ead;">if </span><span>not os.path.</span><span style="color:#bf616a;">exists</span><span>(</span><span style="color:#bf616a;">STORE_PATH</span><span>):
+</span><span>        os.</span><span style="color:#bf616a;">makedirs</span><span>(</span><span style="color:#bf616a;">STORE_PATH</span><span>)
+</span><span>
+</span><span>    file_handler = logging.</span><span style="color:#bf616a;">FileHandler</span><span>(</span><span style="color:#bf616a;">LOG_FILENAME</span><span>)
+</span><span>    stream_handler = logging.</span><span style="color:#bf616a;">StreamHandler</span><span>()
+</span><span>
+</span><span>    file_handler.</span><span style="color:#bf616a;">setLevel</span><span>(logging.</span><span style="color:#bf616a;">WARNING</span><span>)
+</span><span>    stream_handler.</span><span style="color:#bf616a;">setLevel</span><span>(logging.</span><span style="color:#bf616a;">INFO</span><span>)
+</span><span>
+</span><span>    logging_format = logging.</span><span style="color:#bf616a;">Formatter</span><span>(
+</span><span>        &#39;</span><span style="color:#d08770;">%(</span><span style="color:#bf616a;">asctime</span><span style="color:#d08770;">)s</span><span style="color:#a3be8c;"> - </span><span style="color:#d08770;">%(</span><span style="color:#bf616a;">levelname</span><span style="color:#d08770;">)s</span><span style="color:#a3be8c;"> - </span><span style="color:#d08770;">%(</span><span style="color:#bf616a;">message</span><span style="color:#d08770;">)s</span><span>&#39;)
+</span><span>    file_handler.</span><span style="color:#bf616a;">setFormatter</span><span>(logging_format)
+</span><span>    stream_handler.</span><span style="color:#bf616a;">setFormatter</span><span>(logging_format)
+</span><span>    log.</span><span style="color:#bf616a;">addHandler</span><span>(file_handler)
+</span><span>    log.</span><span style="color:#bf616a;">addHandler</span><span>(stream_handler)
+</span><span>
+</span><span>
+</span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">humansize</span><span>(</span><span style="color:#bf616a;">nbytes</span><span>: int) -&gt; str:
+</span><span>    suffixes = [&#39;</span><span style="color:#a3be8c;">b</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">Kb</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">Mb</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">Gb</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">Tb</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">Pb</span><span>&#39;]
+</span><span>    i = </span><span style="color:#d08770;">0
+</span><span>    </span><span style="color:#b48ead;">while </span><span>nbytes &gt;= </span><span style="color:#d08770;">1024 </span><span>and i &lt;= </span><span style="color:#96b5b4;">len</span><span>(suffixes)-</span><span style="color:#d08770;">1</span><span>:
+</span><span>        nbytes /= </span><span style="color:#d08770;">1024
+</span><span>        i += </span><span style="color:#d08770;">1
+</span><span>    </span><span style="color:#b48ead;">return f</span><span>&quot;{nbytes</span><span style="color:#d08770;">:.2f</span><span>}{suffixes[i]}</span><span style="color:#a3be8c;">ps</span><span>&quot;
+</span><span>
+</span><span>
+</span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">main</span><span>() -&gt; </span><span style="color:#d08770;">None</span><span>:
+</span><span>    log = logging.</span><span style="color:#bf616a;">getLogger</span><span>(__name__)
+</span><span>    log.</span><span style="color:#bf616a;">info</span><span>(&#39;</span><span style="color:#a3be8c;">Start measure</span><span>&#39;)
+</span><span>    st = </span><span style="color:#bf616a;">Speedtest</span><span>()
+</span><span>
+</span><span>    ds = </span><span style="color:#bf616a;">humansize</span><span>(st.</span><span style="color:#bf616a;">download</span><span>())
+</span><span>    us = </span><span style="color:#bf616a;">humansize</span><span>(st.</span><span style="color:#bf616a;">upload</span><span>())
+</span><span>    recorded_time = pd.Timestamp.</span><span style="color:#bf616a;">now</span><span>()
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">if </span><span>not os.path.</span><span style="color:#bf616a;">exists</span><span>(</span><span style="color:#bf616a;">CSV_FILENAME</span><span>):
+</span><span>        log.</span><span style="color:#bf616a;">warn</span><span>(
+</span><span>            </span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">File &#39;</span><span>{</span><span style="color:#bf616a;">CSV_FILENAME</span><span>}</span><span style="color:#a3be8c;">&#39; not found. Creating a new CSV file.</span><span>&quot;)
+</span><span>        columns = [&quot;</span><span style="color:#a3be8c;">Datetime</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">Download</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">Upload</span><span>&quot;]
+</span><span>        df = pd.</span><span style="color:#bf616a;">DataFrame</span><span>(</span><span style="color:#bf616a;">columns</span><span>=columns)
+</span><span>    </span><span style="color:#b48ead;">else</span><span>:
+</span><span>        df = pd.</span><span style="color:#bf616a;">read_csv</span><span>(</span><span style="color:#bf616a;">CSV_FILENAME</span><span>, </span><span style="color:#bf616a;">parse_dates</span><span>=</span><span style="color:#d08770;">True</span><span>)
+</span><span>
+</span><span>    new_data = {&quot;</span><span style="color:#a3be8c;">Datetime</span><span>&quot;: recorded_time, &quot;</span><span style="color:#a3be8c;">Download</span><span>&quot;: ds, &quot;</span><span style="color:#a3be8c;">Upload</span><span>&quot;: us}
+</span><span>
+</span><span>    df.loc[recorded_time] = new_data
+</span><span>
+</span><span>    df.</span><span style="color:#bf616a;">to_csv</span><span>(</span><span style="color:#bf616a;">CSV_FILENAME</span><span>, </span><span style="color:#bf616a;">index</span><span>=</span><span style="color:#d08770;">False</span><span>)
+</span><span>    log.</span><span style="color:#bf616a;">info</span><span>(&#39;</span><span style="color:#a3be8c;">Done</span><span>&#39;)
+</span><span>    log.</span><span style="color:#bf616a;">info</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;{new_data}&quot;)
+</span><span>
+</span><span>
+</span><span style="color:#b48ead;">if </span><span>__name__ == &quot;</span><span style="color:#a3be8c;">__main__</span><span>&quot;:
+</span><span>    log = logging.</span><span style="color:#bf616a;">getLogger</span><span>(__name__)
+</span><span>    </span><span style="color:#bf616a;">_add_log</span><span>()
+</span><span>    </span><span style="color:#b48ead;">try</span><span>:
+</span><span>        </span><span style="color:#bf616a;">main</span><span>()
+</span><span>    </span><span style="color:#b48ead;">except </span><span>Exception </span><span style="color:#b48ead;">as </span><span>e:
+</span><span>        log.</span><span style="color:#bf616a;">error</span><span>(e)
+</span></code></pre>
+<p>Lets look it closely. This is a helper function to store errors in file due to our process will be running in crontab we will not see output of our script.</p>
+<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">_add_log</span><span>() -&gt; </span><span style="color:#d08770;">None</span><span>:
+</span><span>    log = logging.</span><span style="color:#bf616a;">getLogger</span><span>(__name__)
+</span><span>    log.</span><span style="color:#bf616a;">setLevel</span><span>(logging.</span><span style="color:#bf616a;">INFO</span><span>)
+</span><span>    </span><span style="color:#b48ead;">if </span><span>not os.path.</span><span style="color:#bf616a;">exists</span><span>(</span><span style="color:#bf616a;">STORE_PATH</span><span>):
+</span><span>        os.</span><span style="color:#bf616a;">makedirs</span><span>(</span><span style="color:#bf616a;">STORE_PATH</span><span>)
+</span><span>
+</span><span>    file_handler = logging.</span><span style="color:#bf616a;">FileHandler</span><span>(</span><span style="color:#bf616a;">LOG_FILENAME</span><span>)
+</span><span>    stream_handler = logging.</span><span style="color:#bf616a;">StreamHandler</span><span>()
+</span><span>
+</span><span>    file_handler.</span><span style="color:#bf616a;">setLevel</span><span>(logging.</span><span style="color:#bf616a;">WARNING</span><span>)
+</span><span>    stream_handler.</span><span style="color:#bf616a;">setLevel</span><span>(logging.</span><span style="color:#bf616a;">INFO</span><span>)
+</span><span>
+</span><span>    logging_format = logging.</span><span style="color:#bf616a;">Formatter</span><span>(
+</span><span>        &#39;</span><span style="color:#d08770;">%(</span><span style="color:#bf616a;">asctime</span><span style="color:#d08770;">)s</span><span style="color:#a3be8c;"> - </span><span style="color:#d08770;">%(</span><span style="color:#bf616a;">levelname</span><span style="color:#d08770;">)s</span><span style="color:#a3be8c;"> - </span><span style="color:#d08770;">%(</span><span style="color:#bf616a;">message</span><span style="color:#d08770;">)s</span><span>&#39;)
+</span><span>    file_handler.</span><span style="color:#bf616a;">setFormatter</span><span>(logging_format)
+</span><span>    stream_handler.</span><span style="color:#bf616a;">setFormatter</span><span>(logging_format)
+</span><span>    log.</span><span style="color:#bf616a;">addHandler</span><span>(file_handler)
+</span><span>    log.</span><span style="color:#bf616a;">addHandler</span><span>(stream_handler)
+</span></code></pre>
+<p>Next one is humanize of number. Like 1024 will be 1.00kbps</p>
+<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">humansize</span><span>(</span><span style="color:#bf616a;">nbytes</span><span>: int) -&gt; str:
+</span><span>    suffixes = [&#39;</span><span style="color:#a3be8c;">b</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">Kb</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">Mb</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">Gb</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">Tb</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">Pb</span><span>&#39;]
+</span><span>    i = </span><span style="color:#d08770;">0
+</span><span>    </span><span style="color:#b48ead;">while </span><span>nbytes &gt;= </span><span style="color:#d08770;">1024 </span><span>and i &lt;= </span><span style="color:#96b5b4;">len</span><span>(suffixes)-</span><span style="color:#d08770;">1</span><span>:
+</span><span>        nbytes /= </span><span style="color:#d08770;">1024
+</span><span>        i += </span><span style="color:#d08770;">1
+</span><span>    </span><span style="color:#b48ead;">return f</span><span>&quot;{nbytes</span><span style="color:#d08770;">:.2f</span><span>}{suffixes[i]}</span><span style="color:#a3be8c;">ps</span><span>&quot;
+</span></code></pre>
+<p>And here we measure download and upload speed. Using pandas read file and add new line of our result with datetime. I install lib calles speedtest-cli to measure internet speed.</p>
+<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">main</span><span>() -&gt; </span><span style="color:#d08770;">None</span><span>:
+</span><span>    log = logging.</span><span style="color:#bf616a;">getLogger</span><span>(__name__)
+</span><span>    log.</span><span style="color:#bf616a;">info</span><span>(&#39;</span><span style="color:#a3be8c;">Start measure</span><span>&#39;)
+</span><span>    st = </span><span style="color:#bf616a;">Speedtest</span><span>()
+</span><span>
+</span><span>    ds = </span><span style="color:#bf616a;">humansize</span><span>(st.</span><span style="color:#bf616a;">download</span><span>())
+</span><span>    us = </span><span style="color:#bf616a;">humansize</span><span>(st.</span><span style="color:#bf616a;">upload</span><span>())
+</span><span>    recorded_time = pd.Timestamp.</span><span style="color:#bf616a;">now</span><span>()
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">if </span><span>not os.path.</span><span style="color:#bf616a;">exists</span><span>(</span><span style="color:#bf616a;">CSV_FILENAME</span><span>):
+</span><span>        log.</span><span style="color:#bf616a;">warn</span><span>(
+</span><span>            </span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">File &#39;</span><span>{</span><span style="color:#bf616a;">CSV_FILENAME</span><span>}</span><span style="color:#a3be8c;">&#39; not found. Creating a new CSV file.</span><span>&quot;)
+</span><span>        columns = [&quot;</span><span style="color:#a3be8c;">Datetime</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">Download</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">Upload</span><span>&quot;]
+</span><span>        df = pd.</span><span style="color:#bf616a;">DataFrame</span><span>(</span><span style="color:#bf616a;">columns</span><span>=columns)
+</span><span>    </span><span style="color:#b48ead;">else</span><span>:
+</span><span>        df = pd.</span><span style="color:#bf616a;">read_csv</span><span>(</span><span style="color:#bf616a;">CSV_FILENAME</span><span>, </span><span style="color:#bf616a;">parse_dates</span><span>=</span><span style="color:#d08770;">True</span><span>)
+</span><span>
+</span><span>    new_data = {&quot;</span><span style="color:#a3be8c;">Datetime</span><span>&quot;: recorded_time, &quot;</span><span style="color:#a3be8c;">Download</span><span>&quot;: ds, &quot;</span><span style="color:#a3be8c;">Upload</span><span>&quot;: us}
+</span><span>
+</span><span>    df.loc[recorded_time] = new_data
+</span><span>
+</span><span>    df.</span><span style="color:#bf616a;">to_csv</span><span>(</span><span style="color:#bf616a;">CSV_FILENAME</span><span>, </span><span style="color:#bf616a;">index</span><span>=</span><span style="color:#d08770;">False</span><span>)
+</span><span>    log.</span><span style="color:#bf616a;">info</span><span>(&#39;</span><span style="color:#a3be8c;">Done</span><span>&#39;)
+</span><span>    log.</span><span style="color:#bf616a;">info</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;{new_data}&quot;)
+</span><span>
+</span><span>
+</span></code></pre>
+<p>Almost all. You should create config.py where you will describe path for logs and .csv file. And now lets create periodic job using cron.</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">crontab -e
+</span></code></pre>
+<p>This will open editon for your cron jobs. Add a new line using cron syntacs </p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>* * * * * &lt;venv/bin/python&gt; &lt;path&gt;/main.py  
+</span></code></pre>
+<p>And that is it, easy</p>
+<hr />
+<p>For more please visit <a href="https://en.wikipedia.org/wiki/Cron">Cron Doc</a> </p>
+
+        </div>
+
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright copyright--user">© 2024 Art&nbsp;<b>KRVNS </b>&nbsp;</div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

@@ -18,18 +18,19 @@
         <lastmod>2024-04-22</lastmod>
     </url>
     <url>
+        <loc>https://kryvonis.github.io/python-cron/</loc>
+        <lastmod>2024-04-23</lastmod>
+    </url>
+    <url>
         <loc>https://kryvonis.github.io/tags/</loc>
     </url>
     <url>
-        <loc>https://kryvonis.github.io/tags/dashplotly/</loc>
+        <loc>https://kryvonis.github.io/tags/cron/</loc>
     </url>
     <url>
         <loc>https://kryvonis.github.io/tags/pipenv/</loc>
     </url>
     <url>
         <loc>https://kryvonis.github.io/tags/python/</loc>
-    </url>
-    <url>
-        <loc>https://kryvonis.github.io/tags/setup/</loc>
     </url>
 </urlset>
