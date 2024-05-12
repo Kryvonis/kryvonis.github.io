@@ -98,6 +98,10 @@
 <p>From now for setup my python projects I will use <a href="https://packaging.python.org/en/latest/tutorials/managing-dependencies">pipenv</a>. It's simple and with just two files (Pipfile, Pipfile.lock). As package.json and package-lock.json in JS, pipenv create both with</p>
 <pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">python3 -m</span><span> pip install</span><span style="color:#bf616a;"> --user</span><span> pipenv
 </span></code></pre>
+<p>In case if pipenv not found</p>
+<pre data-lang="sh" style="background-color:#2b303b;color:#c0c5ce;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#65737e;"># install pipenv to ..rc profile 
+</span><span style="color:#bf616a;">python3 -m</span><span> site</span><span style="color:#bf616a;"> --user-base
+</span></code></pre>
 <p>Then initialize your python version with</p>
 <pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">pipenv --python </span><span>&lt;version&gt;
 </span></code></pre>
